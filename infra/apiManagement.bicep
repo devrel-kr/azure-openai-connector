@@ -148,7 +148,7 @@ resource apimpolicy 'Microsoft.ApiManagement/service/policies@2022-08-01' = {
 }
 
 resource apimproducts 'Microsoft.ApiManagement/service/products@2022-08-01' = [for (product, index) in products: {
-  name: '${apim.name}/${product.name}}'
+  name: '${apim.name}/${product.name}'
   properties: {
     displayName: product.displayName
     description: product.description
