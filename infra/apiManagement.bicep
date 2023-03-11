@@ -11,6 +11,7 @@ param gitHubRepositoryName string
 param openaiApiEndpoint string
 @secure()
 param openaiApiKey string
+param openaiApiVersion string = '2022-12-01'
 
 param apiManagementPublisherName string
 param apiManagementPublisherEmail string
@@ -41,6 +42,7 @@ var apiManagement = {
   gitHubRepositoryName: gitHubRepositoryName
   openaiApiEndpoint: openaiApiEndpoint
   openaiApiKey: openaiApiKey
+  openaiApiVersion: openaiApiVersion
   policyFormat: apiManagementPolicyFormat
   policyValue: apiManagementPolicyValue
 }
@@ -69,6 +71,10 @@ var dicts = [
   {
     name: 'AOAI_API_KEY'
     value: apiManagement.openaiApiKey
+  }
+  {
+    name: 'AOAI_API_VERSION'
+    value: apiManagement.openaiApiVersion
   }
   {
     name: 'OPENAI_API_KEY'
