@@ -25,19 +25,33 @@ resource rg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   location: location
 }
 
+module aoai './openAi.bicep' = {
+  name: 'OpenAI'
+  scope: rg
+  params: {
+    name: name
+    location: 'southcentralus'
+  }
+}
+
 module apim './provision-apiManagement.bicep' = {
   name: 'ApiManagement'
   scope: rg
+  dependsOn: [
+    aoai
+  ]
   params: {
     name: name
     location: location
     storageContainerName: storageContainerName
     gitHubUsername: gitHubUsername
     gitHubRepositoryName: gitHubRepositoryName
+    openaiApiEndpoint: aoai.outputs.endpoint
+    openaiApiKey: aoai.outputs.apiKey
     apiManagementPublisherName: apiManagementPublisherName
     apiManagementPublisherEmail: apiManagementPublisherEmail
     apiManagementPolicyFormat: 'xml-link'
-    apiManagementPolicyValue: 'https://raw.githubusercontent.com/${gitHubUsername}/${gitHubRepositoryName}/${gitHubBranchName}/infra/infra/apim-global-policy.xml'
+    apiManagementPolicyValue: 'https://raw.githubusercontent.com/${gitHubUsername}/${gitHubRepositoryName}/${gitHubBranchName}/infra/apim-global-policy.xml'
   }
 }
 

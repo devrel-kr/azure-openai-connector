@@ -37,4 +37,4 @@ jobs:
     #       -g ${{ env.AZURE_RESOURCE_GROUP_NAME }} \
     #       -n ${{ env.AZURE_APIM_NAME }} \
     #       --named-value-id OPENAI_API_KEY \
-    #       --value "${{ secrets.AZURE_ENV_NAME }}")
+    #       --value "${{ secrets.OPENAI_API_KEY }}")

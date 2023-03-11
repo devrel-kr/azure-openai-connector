@@ -8,6 +8,10 @@ param appInsightsInstrumentationKey string
 param gitHubUsername string
 param gitHubRepositoryName string
 
+param openaiApiEndpoint string
+@secure()
+param openaiApiKey string
+
 param apiManagementPublisherName string
 param apiManagementPublisherEmail string
 
@@ -35,6 +39,8 @@ var apiManagement = {
   publisherEmail: apiManagementPublisherEmail
   gitHubUsername: gitHubUsername
   gitHubRepositoryName: gitHubRepositoryName
+  openaiApiEndpoint: openaiApiEndpoint
+  openaiApiKey: openaiApiKey
   policyFormat: apiManagementPolicyFormat
   policyValue: apiManagementPolicyValue
 }
@@ -55,6 +61,14 @@ var dicts = [
   {
     name: 'GITHUB_REPOSITORY_NAME'
     value: apiManagement.gitHubRepositoryName
+  }
+  {
+    name: 'AOAI_API_ENDPOINT'
+    value: apiManagement.openaiApiEndpoint
+  }
+  {
+    name: 'AOAI_API_KEY'
+    value: apiManagement.openaiApiKey
   }
   {
     name: 'OPENAI_API_KEY'

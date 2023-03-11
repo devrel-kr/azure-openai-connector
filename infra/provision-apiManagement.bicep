@@ -6,6 +6,9 @@ param gitHubUsername string
 param gitHubRepositoryName string
 param apiManagementPublisherName string
 param apiManagementPublisherEmail string
+param openaiApiEndpoint string
+@secure()
+param openaiApiKey string
 @allowed([
   'rawxml'
   'rawxml-link'
@@ -50,6 +53,8 @@ module apim './apiManagement.bicep' = {
     appInsightsInstrumentationKey: appinsapiManagement.outputs.instrumentationKey
     gitHubUsername: gitHubUsername
     gitHubRepositoryName: gitHubRepositoryName
+    openaiApiEndpoint: openaiApiEndpoint
+    openaiApiKey: openaiApiKey
     apiManagementPublisherName: apiManagementPublisherName
     apiManagementPublisherEmail: apiManagementPublisherEmail
     apiManagementPolicyFormat: apiManagementPolicyFormat
