@@ -20,6 +20,7 @@ var apps = [
     apiFormat: 'openapi-link'
     apiExtension: 'yaml'
     apiSubscription: true
+    apiProduct: 'openai'
   }
   {
     apiName: 'AOAI-AUTHORING'
@@ -29,6 +30,7 @@ var apps = [
     apiFormat: 'swagger-link-json'
     apiExtension: 'json'
     apiSubscription: true
+    apiProduct: 'aoai'
   }
   {
     apiName: 'AOAI-COMPLETION'
@@ -38,6 +40,7 @@ var apps = [
     apiFormat: 'openapi+json-link'
     apiExtension: 'json'
     apiSubscription: true
+    apiProduct: 'aoai'
   }
 ]
 var storageContainerName = 'openapis'
@@ -77,7 +80,7 @@ module apim './provision-apiManagement.bicep' = {
   }
 }
 
-module api './provision-apiManagementApi.bicep' = [for (app, index) in apps: {
+module apis './provision-apiManagementApi.bicep' = [for (app, index) in apps: {
   name: 'ApiManagementApi_${app.apiName}'
   scope: rg
   dependsOn: [
@@ -96,5 +99,6 @@ module api './provision-apiManagementApi.bicep' = [for (app, index) in apps: {
     apiManagementApiValue: replace(app.apiReferenceUrl, '{{EXTENSION}}', app.apiExtension)
     apiManagementApiPolicyFormat: 'xml-link'
     apiManagementApiPolicyValue: 'https://raw.githubusercontent.com/${gitHubUsername}/${gitHubRepositoryName}/${gitHubBranchName}/infra/apim-api-policy-${replace(toLower(app.apiName), '-', '')}.xml'
+    apiManagementProductName: app.apiProduct
   }
 }]

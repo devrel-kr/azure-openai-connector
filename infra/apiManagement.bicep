@@ -76,6 +76,30 @@ var dicts = [
   }
 ]
 
+var products = [
+  {
+    name: 'default'
+    displayName: 'Default Product'
+    description: 'This is the default product created by the template, which includes all APIs.'
+    state: 'published'
+    subscriptionRequired: false
+  }
+  {
+    name: 'openai'
+    displayName: 'OpenAI Product'
+    description: 'This is the product for OpenAI API.'
+    state: 'published'
+    subscriptionRequired: true
+  }
+  {
+    name: 'aoai'
+    displayName: 'Azure OpenAI Service Product'
+    description: 'This is the product for Azure OpenAI Service API.'
+    state: 'published'
+    subscriptionRequired: true
+  }
+]
+
 resource apim 'Microsoft.ApiManagement/service@2022-08-01' = {
   name: apiManagement.name
   location: apiManagement.location
@@ -123,15 +147,15 @@ resource apimpolicy 'Microsoft.ApiManagement/service/policies@2022-08-01' = {
   }
 }
 
-resource apimproduct 'Microsoft.ApiManagement/service/products@2022-08-01' = {
-  name: '${apim.name}/default'
+resource apimproducts 'Microsoft.ApiManagement/service/products@2022-08-01' = [for (product, index) in products: {
+  name: '${apim.name}/${product.name}}'
   properties: {
-    displayName: 'Default Product'
-    description: 'This is the default product created by the template, which includes all APIs.'
-    state: 'published'
-    subscriptionRequired: false
+    displayName: product.displayName
+    description: product.description
+    state: product.state
+    subscriptionRequired: product.subscriptionRequired
   }
-}
+}]
 
 output id string = apim.id
 output name string = apim.name
