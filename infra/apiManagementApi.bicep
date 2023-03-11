@@ -89,6 +89,9 @@ resource apimproduct 'Microsoft.ApiManagement/service/products@2022-08-01' exist
 
 resource apimproductapi 'Microsoft.ApiManagement/service/products/apis@2022-08-01' = {
   name: '${apimproduct.name}/${apiManagement.api.name}'
+  dependsOn: [
+    apimapi
+  ]
 }
 
 output id string = apimapi.id
