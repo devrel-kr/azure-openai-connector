@@ -56,6 +56,10 @@ var dicts = [
     name: 'GITHUB_REPOSITORY_NAME'
     value: apiManagement.gitHubRepositoryName
   }
+  {
+    name: 'OPENAI_API_KEY'
+    value: 'to_be_updated'
+  }
 ]
 
 resource apim 'Microsoft.ApiManagement/service@2022-08-01' = {
