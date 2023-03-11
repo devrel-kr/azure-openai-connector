@@ -11,9 +11,6 @@ resource aoai 'Microsoft.CognitiveServices/accounts@2022-12-01' = {
   name: openai.name
   location: openai.location
   kind: 'OpenAI'
-  identity: {
-    type: 'SystemAssigned'
-  }
   sku: {
     name: openai.skuName
   }
