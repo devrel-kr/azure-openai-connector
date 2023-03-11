@@ -25,7 +25,7 @@ var apps = [
   {
     apiName: 'AOAI-AUTHORING'
     apiPath: 'aoai/authoring'
-    apiServiceUrl: 'https://{{AZURE_ENV_NAME}}.openai.azure.com/openai'
+    apiServiceUrl: 'https://aoai-{{AZURE_ENV_NAME}}.openai.azure.com/openai'
     apiReferenceUrl: 'https://raw.githubusercontent.com/Azure/azure-rest-api-specs/main/specification/cognitiveservices/data-plane/AzureOpenAI/authoring/stable/2022-12-01/azureopenai.{{EXTENSION}}'
     apiFormat: 'swagger-link-json'
     apiExtension: 'json'
@@ -35,7 +35,7 @@ var apps = [
   {
     apiName: 'AOAI-COMPLETION'
     apiPath: 'aoai/completion'
-    apiServiceUrl: 'https://{{AZURE_ENV_NAME}}.openai.azure.com/openai'
+    apiServiceUrl: 'https://aoai-{{AZURE_ENV_NAME}}.openai.azure.com/openai'
     apiReferenceUrl: 'https://raw.githubusercontent.com/Azure/azure-rest-api-specs/main/specification/cognitiveservices/data-plane/AzureOpenAI/inference/stable/2022-12-01/inference.{{EXTENSION}}'
     apiFormat: 'openapi+json-link'
     apiExtension: 'json'

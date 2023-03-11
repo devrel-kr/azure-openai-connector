@@ -13,8 +13,8 @@
 <policies>
   <inbound>
     <base />
-    <set-header name="Authorization" exists-action="override">
-      <value>Bearer {{AOAI_API_KEY}}</value>
+    <set-header name="api-key" exists-action="override">
+      <value>{{AOAI_API_KEY}}</value>
     </set-header>
   </inbound>
   <backend>
