@@ -11,13 +11,35 @@ param gitHubUsername string
 param gitHubRepositoryName string
 param gitHubBranchName string = 'main'
 
-var app = {
-  apiName: 'OPENAI'
-  apiPath: 'openai'
-  apiFormat: 'openapi-link'
-  apiExtension: 'yaml'
-  apiSubscription: true
-}
+var apps = [
+  {
+    apiName: 'OPENAI'
+    apiPath: 'openai'
+    apiServiceUrl: 'https://api.openai.com/v1'
+    apiReferenceUrl: 'https://raw.githubusercontent.com/justinyoo/openai-openapi/master/openapi.{{EXTENSION}}'
+    apiFormat: 'openapi-link'
+    apiExtension: 'yaml'
+    apiSubscription: true
+  }
+  {
+    apiName: 'AOAI-AUTHORING'
+    apiPath: 'aoai/authoring'
+    apiServiceUrl: 'https://{{AZURE_ENV_NAME}}.openai.azure.com/openai'
+    apiReferenceUrl: 'https://raw.githubusercontent.com/Azure/azure-rest-api-specs/main/specification/cognitiveservices/data-plane/AzureOpenAI/authoring/stable/2022-12-01/azureopenai.{{EXTENSION}}'
+    apiFormat: 'swagger-link-json'
+    apiExtension: 'json'
+    apiSubscription: true
+  }
+  {
+    apiName: 'AOAI-COMPLETION'
+    apiPath: 'aoai/completion'
+    apiServiceUrl: 'https://{{AZURE_ENV_NAME}}.openai.azure.com/openai'
+    apiReferenceUrl: 'https://raw.githubusercontent.com/Azure/azure-rest-api-specs/main/specification/cognitiveservices/data-plane/AzureOpenAI/inference/stable/2022-12-01/inference.{{EXTENSION}}'
+    apiFormat: 'openapi+json-link'
+    apiExtension: 'json'
+    apiSubscription: true
+  }
+]
 var storageContainerName = 'openapis'
 
 resource rg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
@@ -55,7 +77,7 @@ module apim './provision-apiManagement.bicep' = {
   }
 }
 
-module api './provision-apiManagementApi.bicep' = {
+module api './provision-apiManagementApi.bicep' = [for (app, index) in apps: {
   name: 'ApiManagementApi_${app.apiName}'
   scope: rg
   dependsOn: [
@@ -68,11 +90,11 @@ module api './provision-apiManagementApi.bicep' = {
     apiManagementApiDisplayName: app.apiName
     apiManagementApiDescription: app.apiName
     apiManagementApiSubscriptionRequired: app.apiSubscription
-    apiManagementApiServiceUrl: 'https://api.openai.com/v1'
+    apiManagementApiServiceUrl: replace(app.apiServiceUrl, '{{AZURE_ENV_NAME}}', name)
     apiManagementApiPath: app.apiPath
     apiManagementApiFormat: app.apiFormat
-    apiManagementApiValue: 'https://raw.githubusercontent.com/justinyoo/openai-openapi/master/openapi.${app.apiExtension}'
+    apiManagementApiValue: replace(app.apiReferenceUrl, '{{EXTENSION}}', app.apiExtension)
     apiManagementApiPolicyFormat: 'xml-link'
     apiManagementApiPolicyValue: 'https://raw.githubusercontent.com/${gitHubUsername}/${gitHubRepositoryName}/${gitHubBranchName}/infra/apim-api-policy-${replace(toLower(app.apiName), '-', '')}.xml'
   }
-}
+}]
