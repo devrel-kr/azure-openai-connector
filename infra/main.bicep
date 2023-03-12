@@ -107,7 +107,7 @@ module apim './provision-apiManagement.bicep' = {
 }
 
 module fncapp './provision-functionApp.bicep' = [for (app, index) in apps: if (app.isFunctionApp == true) {
-  name: 'FunctionApp_${app.functionAppSuffix}'
+  name: 'FunctionApp_${app.apiName}'
   scope: rg
   dependsOn: [
     apim
