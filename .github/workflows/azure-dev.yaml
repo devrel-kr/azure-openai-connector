@@ -7,7 +7,7 @@ on:
 
 env:
   AZURE_RESOURCE_GROUP_NAME: 'rg-${{ secrets.AZURE_ENV_NAME }}'
-  AZURE_FNCAPP_NAME: 'rg-${{ secrets.AZURE_ENV_NAME }}-helper'
+  AZURE_FNCAPP_NAME: 'fncapp-${{ secrets.AZURE_ENV_NAME }}-helper'
   AZURE_APIM_NAME: 'apim-${{ secrets.AZURE_ENV_NAME }}'
 
 # permissions: write-all
