@@ -7,6 +7,7 @@ on:
 
 env:
   AZURE_RESOURCE_GROUP_NAME: 'rg-${{ secrets.AZURE_ENV_NAME }}'
+  AZURE_FNCAPP_NAME: 'rg-${{ secrets.AZURE_ENV_NAME }}-helper'
   AZURE_APIM_NAME: 'apim-${{ secrets.AZURE_ENV_NAME }}'
 
 # permissions: write-all
@@ -22,6 +23,42 @@ jobs:
     - name: Checkout the repo
       uses: actions/checkout@v2
 
+    - name: Setup .NET SDK
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 6.x
+
+    - name: Restore NuGet packages
+      shell: bash
+      run: |
+        dotnet restore
+
+    - name: Build solution
+      shell: bash
+      run: |
+        dotnet build -c Release
+
+    - name: Test solution
+      shell: bash
+      run: |
+        dotnet test -c Release
+
+    - name: Create artifact
+      shell: bash
+      run: |
+        dotnet publish -c Release
+
+    - name: Zip artifact
+      shell: bash
+      run: |
+        pushd src/HelperApp/bin/Release/net6.0/publish
+
+        zip -r fncapp.zip .
+
+        echo "AZURE_FNCAPP_PATH=src/HelperApp/bin/Release/net6.0/publish/fncapp.zip" >> $GITHUB_ENV
+
+        popd
+
     - name: Login to Azure
       uses: Azure/login@v1
       with:
@@ -29,6 +66,16 @@ jobs:
         client-id: ${{ secrets.AZURE_CLIENT_ID }}
         tenant-id: ${{ secrets.AZURE_TENANT_ID }}
         subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+    - name: Deploy FunctionApp artifact to Azure
+      shell: bash
+      run: |
+        az functionapp deploy \
+          -g ${{ env.AZURE_RESOURCE_GROUP_NAME }} \
+          -n ${{ env.AZURE_FNCAPP_NAME }} \
+          --src-path ${{ env.AZURE_FNCAPP_PATH }} \
+          --type zip \
+          --verbose
 
     - name: Update APIM settings
       shell: bash
