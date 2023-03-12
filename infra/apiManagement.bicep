@@ -13,6 +13,10 @@ param openaiApiEndpoint string
 param openaiApiKey string
 param openaiApiVersion string = '2022-12-01'
 
+param translatorApiEndpoint string
+@secure()
+param translatorApiKey string
+
 param apiManagementPublisherName string
 param apiManagementPublisherEmail string
 
@@ -42,6 +46,8 @@ var apiManagement = {
   gitHubRepositoryName: gitHubRepositoryName
   openaiApiEndpoint: openaiApiEndpoint
   openaiApiKey: openaiApiKey
+  translatorApiEndpoint: translatorApiEndpoint
+  translatorApiKey: translatorApiKey
   openaiApiVersion: openaiApiVersion
   policyFormat: apiManagementPolicyFormat
   policyValue: apiManagementPolicyValue
@@ -75,6 +81,14 @@ var dicts = [
   {
     name: 'AOAI_API_VERSION'
     value: apiManagement.openaiApiVersion
+  }
+  {
+    name: 'TRANSLATOR_API_ENDPOINT'
+    value: apiManagement.translatorApiEndpoint
+  }
+  {
+    name: 'TRANSLATOR_API_KEY'
+    value: apiManagement.translatorApiKey
   }
   {
     name: 'OPENAI_API_KEY'

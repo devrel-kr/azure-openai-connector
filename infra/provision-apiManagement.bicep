@@ -9,6 +9,9 @@ param apiManagementPublisherEmail string
 param openaiApiEndpoint string
 @secure()
 param openaiApiKey string
+param translatorApiEndpoint string
+@secure()
+param translatorApiKey string
 @allowed([
   'rawxml'
   'rawxml-link'
@@ -55,6 +58,8 @@ module apim './apiManagement.bicep' = {
     gitHubRepositoryName: gitHubRepositoryName
     openaiApiEndpoint: openaiApiEndpoint
     openaiApiKey: openaiApiKey
+    translatorApiEndpoint: translatorApiEndpoint
+    translatorApiKey: translatorApiKey
     apiManagementPublisherName: apiManagementPublisherName
     apiManagementPublisherEmail: apiManagementPublisherEmail
     apiManagementPolicyFormat: apiManagementPolicyFormat

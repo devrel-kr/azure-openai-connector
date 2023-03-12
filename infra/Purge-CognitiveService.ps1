@@ -1,4 +1,4 @@
-# Purges the deleted the Azure OpenAI Service instance.
+# Purges the deleted the Azure Cognitive Service instance.
 Param(
     [string]
     [Parameter(Mandatory=$false)]
@@ -10,7 +10,7 @@ Param(
 )
 
 function Show-Usage {
-    Write-Output "    This permanently deletes the Azure OpenAI Service instance
+    Write-Output "    This permanently deletes the Azure Cognitive Service instance
 
     Usage: $(Split-Path $MyInvocation.ScriptName -Leaf) ``
             [-ApiVersion <API version>] ``
@@ -33,8 +33,8 @@ if ($needHelp -eq $true) {
     Exit 0
 }
 
-# List soft-deleted Azure OpenAI Service instances
-function List-DeletedAOAIs {
+# List soft-deleted Azure Cognitive Service instances
+function List-DeletedCognitiveServices {
     param (
         [string] $ApiVersion
     )
@@ -50,7 +50,7 @@ function List-DeletedAOAIs {
 
     $aoais = $(az rest -m get -u $url --query "value" | ConvertFrom-Json)
     if ($aoais -eq $null) {
-        $options = "All soft-deleted Azure OpenAI Service instances purged or no such instance found to purge"
+        $options = "All soft-deleted Azure Cognitive Service instances purged or no such instance found to purge"
         $returnValue = @{ aoais = $aoais; options = $options }
         return $returnValue
     }
@@ -71,14 +71,14 @@ function List-DeletedAOAIs {
     return $returnValue
 }
 
-# Purge soft-deleted Azure OpenAI Service instances
-function Purge-DeletedAOAIs {
+# Purge soft-deleted Azure Cognitive Service instances
+function Purge-DeletedCognitiveServices {
     param (
         [string] $ApiVersion
     )
 
     $continue = $true
-    $result = List-DeletedAOAIs -ApiVersion $ApiVersion
+    $result = List-DeletedCognitiveServices -ApiVersion $ApiVersion
     if ($result.aoais -eq $null) {
         $continue = $false
     }
@@ -86,7 +86,7 @@ function Purge-DeletedAOAIs {
     while ($continue -eq $true) {
         $options = $result.options
 
-        $input = Read-Host "Select the number to purge the soft-deleted Azure OpenAI Service instance or 'q' to quit: `n`n$options"
+        $input = Read-Host "Select the number to purge the soft-deleted Azure Cognitive Service instance or 'q' to quit: `n`n$options"
         if ($input -eq "q") {
             $continue = $false
             break
@@ -118,7 +118,7 @@ function Purge-DeletedAOAIs {
             $deleted = $(az rest -m delete -u $url)
         }
 
-        $result = List-DeletedAOAIs -ApiVersion $ApiVersion
+        $result = List-DeletedCognitiveServices -ApiVersion $ApiVersion
         if ($result.aoais -eq $null) {
             $continue = $false
         }
@@ -129,4 +129,4 @@ function Purge-DeletedAOAIs {
     }
 }
 
-Purge-DeletedAOAIs -ApiVersion $ApiVersion
+Purge-DeletedCognitiveServices -ApiVersion $ApiVersion
