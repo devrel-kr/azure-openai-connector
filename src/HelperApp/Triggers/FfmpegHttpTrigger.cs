@@ -40,8 +40,9 @@ namespace DevRelKR.OpenAIConnector.HelperApp.Triggers
         [OpenApiParameter(name: "output", In = ParameterLocation.Path, Required = true, Type = typeof(string), Description = "The output file format")]
         [OpenApiRequestBody(contentType: "text/plain", bodyType: typeof(string), Description = "The input file data")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "audio/wav", bodyType: typeof(byte[]), Description = "The output file data")]
-        [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Description = "Either request header or body is invalid")]
-        [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.NotFound, Description = "Resource not found")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.BadRequest, contentType: "text/plain", bodyType: typeof(string), Description = "Either request header or body is invalid")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.NotFound, contentType: "text/plain", bodyType: typeof(string), Description = "Resource not found")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.InternalServerError, contentType: "text/plain", bodyType: typeof(string), Description = "Something went wrong")]
         public async Task<IActionResult> ConvertAsync(
             [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "convert/{input}/{output}")] HttpRequest req,
             string input, string output,
