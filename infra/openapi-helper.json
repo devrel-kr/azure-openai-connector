@@ -1,0 +1,59 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "OpenAI Connector Helper API",
+    "description": "This is an API for OpenAI Connector Helper.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:7071/api"
+    }
+  ],
+  "paths": {
+    "/convert/{source}/{target}": {
+      "post": {
+        "tags": [
+          "converter"
+        ],
+        "operationId": "Convert",
+        "requestBody": {
+          "description": "The input file data",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The output file data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "function_key": [ ]
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "function_key": {
+        "type": "apiKey",
+        "name": "x-functions-key",
+        "in": "header"
+      }
+    }
+  }
+}

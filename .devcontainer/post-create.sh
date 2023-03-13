@@ -33,11 +33,11 @@ az bicep install
 
 ## AZURE FUNCTIONS CORE TOOLS ##
 # Uncomment the below to install Azure Functions Core Tools. Make sure you have installed node.js
-# npm i -g azure-functions-core-tools@4 --unsafe-perm true
+npm i -g azure-functions-core-tools@4 --unsafe-perm true
 
 ## Azurite ##
 # Uncomment the below to install Azurite. Make sure you have installed node.js
-# npm install -g azurite
+npm install -g azurite
 
 ## AZURE STATIC WEB APPS CLI ##
 # Uncomment the below to install Azure Static Web Apps CLI. Make sure you have installed node.js

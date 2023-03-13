@@ -54,7 +54,7 @@ var apps = [
     apiName: 'HELPER'
     apiPath: 'helper'
     apiServiceUrl: 'https://fncapp-{{AZURE_ENV_NAME}}-{{SUFFIX}}.azurewebsites.net/api'
-    apiReferenceUrl: 'https://raw.githubusercontent.com/${gitHubUsername}/${gitHubRepositoryName}/${gitHubBranchName}/infra/openapi-{{AZURE_ENV_NAME}}-{{SUFFIX}}.{{EXTENSION}}'
+    apiReferenceUrl: 'https://raw.githubusercontent.com/${gitHubUsername}/${gitHubRepositoryName}/${gitHubBranchName}/infra/openapi-{{SUFFIX}}.{{EXTENSION}}'
     apiFormat: 'openapi+json-link'
     apiExtension: 'json'
     apiSubscription: true
@@ -102,7 +102,7 @@ module apim './provision-apiManagement.bicep' = {
     apiManagementPublisherName: apiManagementPublisherName
     apiManagementPublisherEmail: apiManagementPublisherEmail
     apiManagementPolicyFormat: 'xml-link'
-    apiManagementPolicyValue: 'https://raw.githubusercontent.com/${gitHubUsername}/${gitHubRepositoryName}/${gitHubBranchName}/infra/apim-global-policy.xml'
+    apiManagementPolicyValue: 'https://raw.githubusercontent.com/${gitHubUsername}/${gitHubRepositoryName}/${gitHubBranchName}/infra/apim-policy-global.xml'
   }
 }
 
@@ -123,7 +123,7 @@ module fncapp './provision-functionApp.bicep' = [for (app, index) in apps: if (a
   }
 }]
 
-module apis './provision-apiManagementApi.bicep' = [for (app, index) in apps: if (app.isFunctionApp == false) {
+module apis './provision-apiManagementApi.bicep' = [for (app, index) in apps: {
   name: 'ApiManagementApi_${app.apiName}'
   scope: rg
   dependsOn: [
@@ -141,7 +141,7 @@ module apis './provision-apiManagementApi.bicep' = [for (app, index) in apps: if
     apiManagementApiFormat: app.apiFormat
     apiManagementApiValue: replace(replace(app.apiReferenceUrl, '{{SUFFIX}}', app.functionAppSuffix), '{{EXTENSION}}', app.apiExtension)
     apiManagementApiPolicyFormat: 'xml-link'
-    apiManagementApiPolicyValue: 'https://raw.githubusercontent.com/${gitHubUsername}/${gitHubRepositoryName}/${gitHubBranchName}/infra/apim-api-policy-${replace(toLower(app.apiName), '-', '')}.xml'
+    apiManagementApiPolicyValue: 'https://raw.githubusercontent.com/${gitHubUsername}/${gitHubRepositoryName}/${gitHubBranchName}/infra/apim-policy-api-${replace(toLower(app.apiName), '-', '')}.xml'
     apiManagementProductName: app.apiProduct
   }
 }]
