@@ -106,7 +106,7 @@ var products = [
     displayName: 'Default Product'
     description: 'This is the default product created by the template, which includes all APIs.'
     state: 'published'
-    subscriptionRequired: false
+    subscriptionRequired: true
   }
   {
     name: 'openai'
