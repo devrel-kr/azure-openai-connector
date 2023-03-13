@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Web.Http;
 
@@ -46,20 +47,23 @@ namespace DevRelKR.OpenAIConnector.HelperApp.Triggers
             string input, string output,
             ExecutionContext context)
         {
-            _logger.LogInformation("C# HTTP trigger function processed a request.");
+            this._logger.LogInformation("C# HTTP trigger function processed a request.");
 
             if (input.IsNullOrWhiteSpace())
             {
-                return new NotFoundResult();
+                this._logger.LogError("Input is missing");
+                return new NotFoundObjectResult("Either input or output is missing");
             }
             if (output.IsNullOrWhiteSpace())
             {
-                return new NotFoundResult();
+                this._logger.LogError("Output is missing");
+                return new NotFoundObjectResult("Either input or output is missing");
             }
 
             if (req.Body.Length == 0)
             {
-                return new BadRequestResult();
+                this._logger.LogError("No request payload");
+                return new BadRequestObjectResult("Request payload not found");
             }
 
             var tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
@@ -74,7 +78,8 @@ namespace DevRelKR.OpenAIConnector.HelperApp.Triggers
             await File.WriteAllBytesAsync(voiceIn, bytes);
 
             var fncappdir = context.FunctionAppDirectory;
-            var ffmpeg = Path.Combine(fncappdir, $"Tools{Path.DirectorySeparatorChar}ffmpeg.exe");
+            var ffmpeg = Path.Combine(fncappdir,
+                                      $"Tools{Path.DirectorySeparatorChar}ffmpeg{(OperatingSystem.IsWindows() ? ".exe" : string.Empty)}");
 
             try
             {
@@ -92,6 +97,8 @@ namespace DevRelKR.OpenAIConnector.HelperApp.Triggers
             }
             catch (Exception ex)
             {
+                this._logger.LogError($"Error: {ex.Message}");
+
                 return new ContentResult()
                 {
                     StatusCode = (int)HttpStatusCode.InternalServerError,
