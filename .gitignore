@@ -350,3 +350,4 @@ MigrationBackup/
 .ionide/
 
 .azure
+src/**/ffmpeg*

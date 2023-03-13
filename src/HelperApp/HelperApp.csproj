@@ -1,27 +1,33 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
+  <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <AzureFunctionsVersion>v4</AzureFunctionsVersion>
 
-		<AssemblyName>DevRelKR.OpenAIConnector.HelperApp</AssemblyName>
-		<RootNamespace>DevRelKR.OpenAIConnector.HelperApp</RootNamespace>
-	</PropertyGroup>
+    <AssemblyName>DevRelKR.OpenAIConnector.HelperApp</AssemblyName>
+    <RootNamespace>DevRelKR.OpenAIConnector.HelperApp</RootNamespace>
+  </PropertyGroup>
 
-	<ItemGroup>
+  <ItemGroup>
     <PackageReference Include="Microsoft.Azure.Functions.Extensions" Version="1.*" />
     <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.OpenApi" Version="1.*" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="6.*" />
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="4.*" />
   </ItemGroup>
 
-	<ItemGroup>
+  <ItemGroup>
     <None Update="host.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="local.settings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+    </None>
+    <None Update="Tools\ffmpeg.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Tools\ffmpeg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 
