@@ -4,26 +4,58 @@ info:
   description: This is an API for OpenAI Connector Helper.
   version: 1.0.0
 servers:
-  - url: https://justinyoo-solid-space-tribble-q7r6557rx6h67vr-7071.preview.app.github.dev/api
+  - url: http://localhost:7071/api
 paths:
-  '/convert/{source}/{target}':
+  '/convert/{input}/{output}':
     post:
       tags:
         - converter
       operationId: Convert
+      parameters:
+        - name: input
+          in: path
+          description: The input file format
+          required: true
+          schema:
+            type: string
+        - name: output
+          in: path
+          description: The output file format
+          required: true
+          schema:
+            type: string
       requestBody:
         description: The input file data
         content:
-          application/json:
+          text/plain:
             schema:
-              type: object
+              type: string
       responses:
         '200':
           description: The output file data
           content:
-            application/json:
+            audio/wav:
               schema:
-                type: object
+                type: string
+                format: binary
+        '400':
+          description: Either request header or body is invalid
+          content:
+            text/plain:
+              schema:
+                type: string
+        '404':
+          description: Resource not found
+          content:
+            text/plain:
+              schema:
+                type: string
+        '500':
+          description: Something went wrong
+          content:
+            text/plain:
+              schema:
+                type: string
       security:
         - function_key: [ ]
 components:
