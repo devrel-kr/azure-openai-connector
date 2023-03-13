@@ -2,9 +2,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using System.Web.Http;
 
 using DevRelKR.OpenAIConnector.HelperApp.Configurations;
 
@@ -15,7 +13,6 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Extensions;
-using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 
