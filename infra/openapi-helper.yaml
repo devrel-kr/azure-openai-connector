@@ -1,0 +1,34 @@
+openapi: 3.0.1
+info:
+  title: OpenAI Connector Helper API
+  description: This is an API for OpenAI Connector Helper.
+  version: 1.0.0
+servers:
+  - url: https://justinyoo-solid-space-tribble-q7r6557rx6h67vr-7071.preview.app.github.dev/api
+paths:
+  '/convert/{source}/{target}':
+    post:
+      tags:
+        - converter
+      operationId: Convert
+      requestBody:
+        description: The input file data
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: The output file data
+          content:
+            application/json:
+              schema:
+                type: object
+      security:
+        - function_key: [ ]
+components:
+  securitySchemes:
+    function_key:
+      type: apiKey
+      name: x-functions-key
+      in: header

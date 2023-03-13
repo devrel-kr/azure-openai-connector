@@ -55,8 +55,8 @@ var apps = [
     apiPath: 'helper'
     apiServiceUrl: 'https://fncapp-{{AZURE_ENV_NAME}}-{{SUFFIX}}.azurewebsites.net/api'
     apiReferenceUrl: 'https://raw.githubusercontent.com/${gitHubUsername}/${gitHubRepositoryName}/${gitHubBranchName}/infra/openapi-{{SUFFIX}}.{{EXTENSION}}'
-    apiFormat: 'openapi+json-link'
-    apiExtension: 'json'
+    apiFormat: 'openapi-link'
+    apiExtension: 'yaml'
     apiSubscription: true
     apiProduct: 'default'
   }
