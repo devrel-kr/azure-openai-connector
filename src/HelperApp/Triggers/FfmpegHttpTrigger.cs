@@ -1,6 +1,10 @@
+using System;
+using System.Diagnostics;
 using System.IO;
 using System.Net;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using System.Web.Http;
 
 using DevRelKR.OpenAIConnector.HelperApp.Configurations;
 
@@ -15,7 +19,7 @@ using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 
-using Newtonsoft.Json;
+using ExecutionContext = Microsoft.Azure.WebJobs.ExecutionContext;
 
 namespace DevRelKR.OpenAIConnector.HelperApp.Triggers
 {
@@ -35,49 +39,83 @@ namespace DevRelKR.OpenAIConnector.HelperApp.Triggers
         [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "x-functions-key", In = OpenApiSecurityLocationType.Header)]
         [OpenApiParameter(name: "input", In = ParameterLocation.Path, Required = true, Type = typeof(string), Description = "The input file format")]
         [OpenApiParameter(name: "output", In = ParameterLocation.Path, Required = true, Type = typeof(string), Description = "The output file format")]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(object), Description = "The input file data")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(object), Description = "The output file data")]
-        [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Description = "Either request header or body is invalid")]
-        [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.NotFound, Description = "Resource not found")]
+        [OpenApiRequestBody(contentType: "text/plain", bodyType: typeof(string), Description = "The input file data")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "audio/wav", bodyType: typeof(byte[]), Description = "The output file data")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.BadRequest, contentType: "text/plain", bodyType: typeof(string), Description = "Either request header or body is invalid")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.NotFound, contentType: "text/plain", bodyType: typeof(string), Description = "Resource not found")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.InternalServerError, contentType: "text/plain", bodyType: typeof(string), Description = "Something went wrong")]
         public async Task<IActionResult> ConvertAsync(
             [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "convert/{input}/{output}")] HttpRequest req,
             string input, string output,
             ExecutionContext context)
         {
-            _logger.LogInformation("C# HTTP trigger function processed a request.");
+            this._logger.LogInformation("C# HTTP trigger function processed a request.");
 
             if (input.IsNullOrWhiteSpace())
             {
-                return new NotFoundResult();
+                this._logger.LogError("Input is missing");
+                return new NotFoundObjectResult("Either input or output is missing");
             }
             if (output.IsNullOrWhiteSpace())
             {
-                return new NotFoundResult();
+                this._logger.LogError("Output is missing");
+                return new NotFoundObjectResult("Either input or output is missing");
             }
+
+            if (req.Body.Length == 0)
+            {
+                this._logger.LogError("No request payload");
+                return new BadRequestObjectResult("Request payload not found");
+            }
+
+            var tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+            var voiceIn = Path.Combine(tempPath, $"{Path.GetRandomFileName()}.{input}");
+            var voiceOut = Path.Combine(tempPath, $"{Path.GetRandomFileName()}.{output}");
+            Directory.CreateDirectory(tempPath);
 
             using var reader = new StreamReader(req.Body);
             var body = await reader.ReadToEndAsync();
-            if (body.IsNullOrWhiteSpace())
-            {
-                return new BadRequestResult();
-            }
+            var bytes = Convert.FromBase64String(body);
 
-            string name = req.Query["name"];
+            await File.WriteAllBytesAsync(voiceIn, bytes);
 
             var fncappdir = context.FunctionAppDirectory;
-            var fncdir = context.FunctionDirectory;
-            var ffmpeg = Path.Combine(fncappdir, "Tools/ffmpeg.exe");
-            var exists = File.Exists(ffmpeg);
+            var ffmpeg = Path.Combine(fncappdir,
+                                      $"Tools{Path.DirectorySeparatorChar}ffmpeg{(OperatingSystem.IsWindows() ? ".exe" : string.Empty)}");
 
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            dynamic data = JsonConvert.DeserializeObject(requestBody);
-            name = name ?? data?.name;
+            try
+            {
+                var psi = new ProcessStartInfo
+                {
+                    FileName = ffmpeg,
+                    Arguments = $"-i \"{voiceIn}\" \"{voiceOut}\"",
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                };
 
-            string responseMessage = string.IsNullOrEmpty(name)
-                ? "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response."
-                : $"Hello, {name}. This HTTP triggered function executed successfully.";
+                var process = Process.Start(psi);
+                process.WaitForExit();
+            }
+            catch (Exception ex)
+            {
+                this._logger.LogError($"Error: {ex.Message}");
 
-            return new OkObjectResult(responseMessage);
+                return new ContentResult()
+                {
+                    StatusCode = (int)HttpStatusCode.InternalServerError,
+                    ContentType = "text/plain",
+                    Content = ex.Message,
+                };
+            }
+
+            bytes = await File.ReadAllBytesAsync(voiceOut);
+
+            File.Delete(voiceIn);
+            File.Delete(voiceOut);
+            Directory.Delete(tempPath, recursive: true);
+
+            return new FileContentResult(bytes, "audio/wav");
         }
     }
 }

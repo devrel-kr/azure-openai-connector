@@ -26,7 +26,7 @@ jobs:
     - name: Copy ffmpeg to project
       shell: bash
       run: |
-        unzip tools/ffmpeg.zip -d src/HelperApp/Tools
+        cp tools/ffmpeg.exe src/HelperApp/Tools
         cp tools/ffmpeg src/HelperApp/Tools
 
     - name: Setup .NET SDK
