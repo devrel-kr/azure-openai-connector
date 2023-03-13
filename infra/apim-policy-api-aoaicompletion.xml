@@ -16,9 +16,9 @@
     <set-header name="api-key" exists-action="override">
       <value>{{AOAI_API_KEY}}</value>
     </set-header>
-    <set-query-parameter name="api-version" exists-action="override">
+    <!-- <set-query-parameter name="api-version" exists-action="override">
       <value>{{AOAI_API_VERSION}}</value>
-    </set-query-parameter>
+    </set-query-parameter> -->
   </inbound>
   <backend>
     <base />

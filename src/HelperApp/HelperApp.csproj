@@ -6,11 +6,14 @@
 
     <AssemblyName>DevRelKR.OpenAIConnector.HelperApp</AssemblyName>
     <RootNamespace>DevRelKR.OpenAIConnector.HelperApp</RootNamespace>
+
+    <UserSecretsId>e45f83d4-9511-444b-8c03-2637f663c04b</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Azure.Functions.Extensions" Version="1.*" />
     <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.OpenApi" Version="1.*" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="6.*" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="6.*" />
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="4.*" />
   </ItemGroup>

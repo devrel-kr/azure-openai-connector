@@ -94,6 +94,10 @@ var dicts = [
     name: 'OPENAI_API_KEY'
     value: 'to_be_updated'
   }
+  {
+    name: 'X_FUNCTIONS_KEY_HELPER'
+    value: 'to_be_updated'
+  }
 ]
 
 var products = [

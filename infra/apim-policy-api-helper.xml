@@ -13,12 +13,9 @@
 <policies>
   <inbound>
     <base />
-    <set-header name="api-key" exists-action="override">
-      <value>{{AOAI_API_KEY}}</value>
+    <set-header name="x-functions-key" exists-action="override">
+      <value>Bearer {{X_FUNCTIONS_KEY_HELPER}}</value>
     </set-header>
-    <!-- <set-query-parameter name="api-version" exists-action="override">
-      <value>{{AOAI_API_VERSION}}</value>
-    </set-query-parameter> -->
   </inbound>
   <backend>
     <base />

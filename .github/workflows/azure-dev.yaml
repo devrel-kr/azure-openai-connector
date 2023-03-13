@@ -86,6 +86,17 @@ jobs:
     - name: Update APIM settings
       shell: bash
       run: |
+        functionKey=$(az functionapp keys list \
+          -g ${{ env.AZURE_RESOURCE_GROUP_NAME }} \
+          -n ${{ env.AZURE_FNCAPP_NAME }} \
+          --query "functionKeys.default" -o tsv)
+
+        apim_nv=$(az apim nv update \
+          -g ${{ env.AZURE_RESOURCE_GROUP_NAME }} \
+          -n ${{ env.AZURE_APIM_NAME }} \
+          --named-value-id X_FUNCTIONS_KEY_HELPER \
+          --value "$functionKey")
+
         apim_nv=$(az apim nv update \
           -g ${{ env.AZURE_RESOURCE_GROUP_NAME }} \
           -n ${{ env.AZURE_APIM_NAME }} \
