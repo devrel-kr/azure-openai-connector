@@ -14,7 +14,7 @@
   <inbound>
     <base />
     <set-header name="x-functions-key" exists-action="override">
-      <value>Bearer {{X_FUNCTIONS_KEY_HELPER}}</value>
+      <value>{{X_FUNCTIONS_KEY_HELPER}}</value>
     </set-header>
   </inbound>
   <backend>
