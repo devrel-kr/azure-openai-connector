@@ -13,6 +13,8 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Extensions;
+using Microsoft.CognitiveServices.Speech;
+using Microsoft.CognitiveServices.Speech.Audio;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 
@@ -42,21 +44,16 @@ namespace DevRelKR.OpenAIConnector.HelperApp.Triggers
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.NotFound, contentType: "text/plain", bodyType: typeof(string), Description = "Resource not found")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.InternalServerError, contentType: "text/plain", bodyType: typeof(string), Description = "Something went wrong")]
         public async Task<IActionResult> ConvertSpeechToTextAsync(
-            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "convert/stt")] HttpRequest req,
-            string input, string output,
+            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "convert/stt/{locale}")] HttpRequest req,
+            string locale,
             ExecutionContext context)
         {
             this._logger.LogInformation("C# HTTP trigger function processed a request.");
 
-            if (input.IsNullOrWhiteSpace())
+            if (locale.IsNullOrWhiteSpace())
             {
-                this._logger.LogError("Input is missing");
-                return new NotFoundObjectResult("Either input or output is missing");
-            }
-            if (output.IsNullOrWhiteSpace())
-            {
-                this._logger.LogError("Output is missing");
-                return new NotFoundObjectResult("Either input or output is missing");
+                this._logger.LogError("Locale is missing");
+                return new NotFoundObjectResult("Locale is missing");
             }
 
             if (req.Body.Length == 0)
@@ -68,10 +65,10 @@ namespace DevRelKR.OpenAIConnector.HelperApp.Triggers
             var fncappdir = context.FunctionAppDirectory;
 #if DEBUG
             var tempPath = Path.Combine(fncappdir, "Temp");
-            var voiceIn = Path.Combine(tempPath, $"{Path.GetRandomFileName()}.{input}");
+            var voiceIn = Path.Combine(tempPath, $"{Path.GetRandomFileName()}.wav");
 #else
             var tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-            var voiceIn = Path.Combine(tempPath, $"{Path.GetRandomFileName()}.{input}");
+            var voiceIn = Path.Combine(tempPath, $"{Path.GetRandomFileName()}.wav");
 #endif
             Directory.CreateDirectory(tempPath);
 
@@ -81,29 +78,15 @@ namespace DevRelKR.OpenAIConnector.HelperApp.Triggers
 
             await File.WriteAllBytesAsync(voiceIn, bytes);
 
-            var speechConfig = SpeechConfig.FromSubscription(this._settings.Speech.ApiKey, this._settings.Speech.Region);        
-            speechConfig.SpeechRecognitionLanguage = "en-US";
-
-            using var audioConfig = AudioConfig.FromDefaultMicrophoneInput();
-            using var speechRecognizer = new SpeechRecognizer(speechConfig, audioConfig);
-
-            var fncappdir = context.FunctionAppDirectory;
-            var ffmpeg = Path.Combine(fncappdir,
-                                      $"Tools{Path.DirectorySeparatorChar}ffmpeg{(OperatingSystem.IsWindows() ? ".exe" : string.Empty)}");
-
             try
             {
-                var psi = new ProcessStartInfo
-                {
-                    FileName = ffmpeg,
-                    Arguments = $"-i \"{voiceIn}\" \"{voiceOut}\"",
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    UseShellExecute = false,
-                };
+                var speechConfig = SpeechConfig.FromSubscription(this._settings.Speech.ApiKey, this._settings.Speech.Region);        
+                speechConfig.SpeechRecognitionLanguage = "en-US";
 
-                var process = Process.Start(psi);
-                process.WaitForExit();
+                using var audioConfig = AudioConfig.FromWavFileInput(voiceIn);
+                using var speechRecognizer = new SpeechRecognizer(speechConfig, audioConfig);
+
+                var result = await speechRecognizer.RecognizeOnceAsync();
             }
             catch (Exception ex)
             {
