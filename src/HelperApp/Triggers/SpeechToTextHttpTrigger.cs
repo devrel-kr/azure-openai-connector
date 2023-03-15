@@ -65,9 +65,14 @@ namespace DevRelKR.OpenAIConnector.HelperApp.Triggers
                 return new BadRequestObjectResult("Request payload not found");
             }
 
+            var fncappdir = context.FunctionAppDirectory;
+#if DEBUG
+            var tempPath = Path.Combine(fncappdir, "Temp");
+            var voiceIn = Path.Combine(tempPath, $"{Path.GetRandomFileName()}.{input}");
+#else
             var tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
             var voiceIn = Path.Combine(tempPath, $"{Path.GetRandomFileName()}.{input}");
-            var voiceOut = Path.Combine(tempPath, $"{Path.GetRandomFileName()}.{output}");
+#endif
             Directory.CreateDirectory(tempPath);
 
             using var reader = new StreamReader(req.Body);
@@ -75,6 +80,12 @@ namespace DevRelKR.OpenAIConnector.HelperApp.Triggers
             var bytes = Convert.FromBase64String(body);
 
             await File.WriteAllBytesAsync(voiceIn, bytes);
+
+            var speechConfig = SpeechConfig.FromSubscription(this._settings.Speech.ApiKey, this._settings.Speech.Region);        
+            speechConfig.SpeechRecognitionLanguage = "en-US";
+
+            using var audioConfig = AudioConfig.FromDefaultMicrophoneInput();
+            using var speechRecognizer = new SpeechRecognizer(speechConfig, audioConfig);
 
             var fncappdir = context.FunctionAppDirectory;
             var ffmpeg = Path.Combine(fncappdir,

@@ -5,6 +5,8 @@
     "FUNCTIONS_WORKER_RUNTIME": "dotnet",
 
     "CognitiveServices__Translator__ApiKey": "{{AZURE_TRANSLATOR_API_KEY}}",
-    "CognitiveServices__Translator__Endpoint": "https://api.cognitive.microsofttranslator.com/"
+    "CognitiveServices__Translator__Endpoint": "https://api.cognitive.microsofttranslator.com/",
+    "CognitiveServices__Speech__ApiKey": "{{AZURE_SPEECH_API_KEY}}",
+    "CognitiveServices__Speech__Region": "{{AZURE_SPEECH_REGION}}"
   }
 }
