@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;
@@ -77,15 +76,17 @@ namespace DevRelKR.OpenAIConnector.HelperApp.Triggers
 
             await File.WriteAllBytesAsync(voiceIn, bytes);
 
+            var stt = new SpeechToTextResponseModel();
             try
             {
-                var speechConfig = SpeechConfig.FromSubscription(this._settings.Speech.ApiKey, this._settings.Speech.Region);        
-                speechConfig.SpeechRecognitionLanguage = "en-US";
+                var speechConfig = SpeechConfig.FromSubscription(this._settings.Speech.ApiKey, this._settings.Speech.Region);
+                speechConfig.SpeechRecognitionLanguage = locale;
 
                 using var audioConfig = AudioConfig.FromWavFileInput(voiceIn);
                 using var speechRecognizer = new SpeechRecognizer(speechConfig, audioConfig);
 
                 var result = await speechRecognizer.RecognizeOnceAsync();
+                stt.OutputData = result.Text;
             }
             catch (Exception ex)
             {
@@ -99,13 +100,10 @@ namespace DevRelKR.OpenAIConnector.HelperApp.Triggers
                 };
             }
 
-            bytes = await File.ReadAllBytesAsync(voiceOut);
-
             File.Delete(voiceIn);
-            File.Delete(voiceOut);
             Directory.Delete(tempPath, recursive: true);
 
-            return new FileContentResult(bytes, "audio/wav");
+            return new OkObjectResult(stt);
         }
     }
 }
