@@ -50,6 +50,13 @@ paths:
       tags:
         - converter
       operationId: ConvertSpeechToText
+      parameters:
+        - name: locale
+          in: path
+          description: The locale of the input file
+          required: true
+          schema:
+            type: string
       requestBody:
         description: The input file data
         content:

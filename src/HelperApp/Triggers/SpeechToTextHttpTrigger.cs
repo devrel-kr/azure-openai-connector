@@ -36,6 +36,7 @@ namespace DevRelKR.OpenAIConnector.HelperApp.Triggers
         [FunctionName(nameof(SpeechToTextHttpTrigger.ConvertSpeechToTextAsync))]
         [OpenApiOperation(operationId: "ConvertSpeechToText", tags: new[] { "converter" })]
         [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "x-functions-key", In = OpenApiSecurityLocationType.Header)]
+        [OpenApiParameter(name: "locale", In = ParameterLocation.Path, Required = true, Type = typeof(string), Description = "The locale of the input file")]
         [OpenApiRequestBody(contentType: "audio/wav", bodyType: typeof(byte[]), Description = "The input file data")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SpeechToTextResponseModel), Description = "The output file data")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.BadRequest, contentType: "text/plain", bodyType: typeof(string), Description = "Either request header or body is invalid")]
