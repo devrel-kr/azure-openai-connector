@@ -37,7 +37,7 @@ namespace DevRelKR.OpenAIConnector.HelperApp.Triggers
         [FunctionName(nameof(AudioFormatHttpTrigger.ConvertFormatAsync))]
         [OpenApiOperation(operationId: "ConvertAudioFormat", tags: new[] { "converter" })]
         [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "x-functions-key", In = OpenApiSecurityLocationType.Header)]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(ConvertAudioRequestModel), Description = "The input file data")]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(AudioFormatRequestModel), Description = "The input file data")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "audio/wav", bodyType: typeof(byte[]), Description = "The output file data")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.BadRequest, contentType: "text/plain", bodyType: typeof(string), Description = "Either request header or body is invalid")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.NotFound, contentType: "text/plain", bodyType: typeof(string), Description = "Resource not found")]
@@ -57,7 +57,7 @@ namespace DevRelKR.OpenAIConnector.HelperApp.Triggers
 
             using var reader = new StreamReader(req.Body);
             var body = await reader.ReadToEndAsync();
-            var request = JsonConvert.DeserializeObject<ConvertAudioRequestModel>(body);
+            var request = JsonConvert.DeserializeObject<AudioFormatRequestModel>(body);
 
             if (request.Input.IsNullOrWhiteSpace())
             {

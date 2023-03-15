@@ -5,6 +5,7 @@ using System.Net;
 using System.Threading.Tasks;
 
 using DevRelKR.OpenAIConnector.HelperApp.Configurations;
+using DevRelKR.OpenAIConnector.HelperApp.Models;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -36,10 +37,8 @@ namespace DevRelKR.OpenAIConnector.HelperApp.Triggers
         [FunctionName(nameof(SpeechToTextHttpTrigger.ConvertSpeechToTextAsync))]
         [OpenApiOperation(operationId: "ConvertSpeechToText", tags: new[] { "converter" })]
         [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "x-functions-key", In = OpenApiSecurityLocationType.Header)]
-        [OpenApiParameter(name: "input", In = ParameterLocation.Path, Required = true, Type = typeof(string), Description = "The input file format")]
-        [OpenApiParameter(name: "output", In = ParameterLocation.Path, Required = true, Type = typeof(string), Description = "The output file format")]
-        [OpenApiRequestBody(contentType: "text/plain", bodyType: typeof(string), Description = "The input file data")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "audio/wav", bodyType: typeof(byte[]), Description = "The output file data")]
+        [OpenApiRequestBody(contentType: "audio/wav", bodyType: typeof(byte[]), Description = "The input file data")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SpeechToTextResponseModel), Description = "The output file data")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.BadRequest, contentType: "text/plain", bodyType: typeof(string), Description = "Either request header or body is invalid")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.NotFound, contentType: "text/plain", bodyType: typeof(string), Description = "Resource not found")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.InternalServerError, contentType: "text/plain", bodyType: typeof(string), Description = "Something went wrong")]
