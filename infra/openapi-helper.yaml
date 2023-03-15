@@ -6,30 +6,17 @@ info:
 servers:
   - url: http://localhost:7071/api
 paths:
-  '/convert/{input}/{output}':
+  /convert/audio:
     post:
       tags:
         - converter
-      operationId: Convert
-      parameters:
-        - name: input
-          in: path
-          description: The input file format
-          required: true
-          schema:
-            type: string
-        - name: output
-          in: path
-          description: The output file format
-          required: true
-          schema:
-            type: string
+      operationId: ConvertAudioFormat
       requestBody:
         description: The input file data
         content:
-          text/plain:
+          application/json:
             schema:
-              type: string
+              $ref: '#/components/schemas/audioFormatRequestModel'
       responses:
         '200':
           description: The output file data
@@ -58,7 +45,61 @@ paths:
                 type: string
       security:
         - function_key: [ ]
+  '/convert/stt/{locale}':
+    post:
+      tags:
+        - converter
+      operationId: ConvertSpeechToText
+      requestBody:
+        description: The input file data
+        content:
+          audio/wav:
+            schema:
+              type: string
+              format: binary
+      responses:
+        '200':
+          description: The output file data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/speechToTextResponseModel'
+        '400':
+          description: Either request header or body is invalid
+          content:
+            text/plain:
+              schema:
+                type: string
+        '404':
+          description: Resource not found
+          content:
+            text/plain:
+              schema:
+                type: string
+        '500':
+          description: Something went wrong
+          content:
+            text/plain:
+              schema:
+                type: string
+      security:
+        - function_key: [ ]
 components:
+  schemas:
+    audioFormatRequestModel:
+      type: object
+      properties:
+        input:
+          type: string
+        output:
+          type: string
+        inputData:
+          type: string
+    speechToTextResponseModel:
+      type: object
+      properties:
+        outputData:
+          type: string
   securitySchemes:
     function_key:
       type: apiKey

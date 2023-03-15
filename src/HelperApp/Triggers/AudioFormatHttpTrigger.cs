@@ -44,7 +44,6 @@ namespace DevRelKR.OpenAIConnector.HelperApp.Triggers
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.InternalServerError, contentType: "text/plain", bodyType: typeof(string), Description = "Something went wrong")]
         public async Task<IActionResult> ConvertFormatAsync(
             [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "convert/audio")] HttpRequest req,
-            string input, string output,
             ExecutionContext context)
         {
             this._logger.LogInformation("C# HTTP trigger function processed a request.");
@@ -80,12 +79,12 @@ namespace DevRelKR.OpenAIConnector.HelperApp.Triggers
             var fncappdir = context.FunctionAppDirectory;
 #if DEBUG
             var tempPath = Path.Combine(fncappdir, "Temp");
-            var voiceIn = Path.Combine(tempPath, $"{Path.GetRandomFileName()}.{input}");
-            var voiceOut = Path.Combine(tempPath, $"{Path.GetRandomFileName()}.{output}");
+            var voiceIn = Path.Combine(tempPath, $"{Path.GetRandomFileName()}.{request.Input}");
+            var voiceOut = Path.Combine(tempPath, $"{Path.GetRandomFileName()}.{request.Output}");
 #else
             var tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-            var voiceIn = Path.Combine(tempPath, $"{Path.GetRandomFileName()}.{input}");
-            var voiceOut = Path.Combine(tempPath, $"{Path.GetRandomFileName()}.{output}");
+            var voiceIn = Path.Combine(tempPath, $"{Path.GetRandomFileName()}.{request.Input}");
+            var voiceOut = Path.Combine(tempPath, $"{Path.GetRandomFileName()}.{request.Output}");
 #endif
             Directory.CreateDirectory(tempPath);
 
