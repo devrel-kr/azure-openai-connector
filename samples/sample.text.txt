@@ -1,0 +1,1 @@
+Hello. It's a sample audio file that tests the Speech-to-Text feature of Azure Cognitive Services. Thanks.
