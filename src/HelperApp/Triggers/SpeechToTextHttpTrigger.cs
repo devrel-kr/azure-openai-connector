@@ -71,11 +71,8 @@ namespace DevRelKR.OpenAIConnector.HelperApp.Triggers
 #endif
             Directory.CreateDirectory(tempPath);
 
-            using var reader = new StreamReader(req.Body);
-            var body = await reader.ReadToEndAsync();
-            var bytes = Convert.FromBase64String(body);
-
-            await File.WriteAllBytesAsync(voiceIn, bytes);
+            using var file = File.Create(voiceIn);
+            await req.Body.CopyToAsync(file);
 
             var stt = new SpeechToTextResponseModel();
             try
@@ -97,12 +94,12 @@ namespace DevRelKR.OpenAIConnector.HelperApp.Triggers
                 {
                     StatusCode = (int)HttpStatusCode.InternalServerError,
                     ContentType = "text/plain",
-                    Content = ex.Message,
+                    Content = $"{ex.Message}\n\n\n{ex.StackTrace}",
                 };
             }
 
-            File.Delete(voiceIn);
-            Directory.Delete(tempPath, recursive: true);
+            // File.Delete(voiceIn);
+            // Directory.Delete(tempPath, recursive: true);
 
             return new OkObjectResult(stt);
         }

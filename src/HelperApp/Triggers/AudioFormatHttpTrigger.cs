@@ -121,9 +121,9 @@ namespace DevRelKR.OpenAIConnector.HelperApp.Triggers
 
             bytes = await File.ReadAllBytesAsync(voiceOut);
 
-            File.Delete(voiceIn);
-            File.Delete(voiceOut);
-            Directory.Delete(tempPath, recursive: true);
+            // File.Delete(voiceIn);
+            // File.Delete(voiceOut);
+            // Directory.Delete(tempPath, recursive: true);
 
             return new FileContentResult(bytes, "audio/wav");
         }
