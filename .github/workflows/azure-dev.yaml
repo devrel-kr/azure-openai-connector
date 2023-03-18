@@ -83,7 +83,7 @@ jobs:
           --type zip \
           --verbose
 
-    - name: Update APIM settings
+    - name: Update APIM settings - function key
       shell: bash
       run: |
         functionKey=$(az functionapp keys list \
@@ -97,6 +97,9 @@ jobs:
           --named-value-id X_FUNCTIONS_KEY_HELPER \
           --value "$functionKey")
 
+    - name: Update APIM settings - OpenAI API key
+      shell: bash
+      run: |
         apim_nv=$(az apim nv update \
           -g ${{ env.AZURE_RESOURCE_GROUP_NAME }} \
           -n ${{ env.AZURE_APIM_NAME }} \
