@@ -10,6 +10,8 @@ paths:
     post:
       tags:
         - converter
+      summary: Converts the audio format from one to the other
+      description: This operation converts the input audio file format (`webm` by default) to the given output file format (`wav` by default).
       operationId: ConvertAudioFormat
       requestBody:
         description: The input file data
@@ -31,12 +33,6 @@ paths:
             text/plain:
               schema:
                 type: string
-        '404':
-          description: Resource not found
-          content:
-            text/plain:
-              schema:
-                type: string
         '500':
           description: Something went wrong
           content:
@@ -49,21 +45,22 @@ paths:
     post:
       tags:
         - converter
+      summary: Converts the voice input to text
+      description: This operation converts the voice input to text based on the given locale (`en-au` by default).
       operationId: ConvertSpeechToText
       parameters:
         - name: locale
           in: path
-          description: The locale of the input file
+          description: The locale of the voice input
           required: true
           schema:
             type: string
       requestBody:
         description: The input file data
         content:
-          audio/wav:
+          multipart/form-data:
             schema:
-              type: string
-              format: binary
+              $ref: '#/components/schemas/speechToTextRequestModel'
       responses:
         '200':
           description: The output file data
@@ -73,12 +70,6 @@ paths:
                 $ref: '#/components/schemas/speechToTextResponseModel'
         '400':
           description: Either request header or body is invalid
-          content:
-            text/plain:
-              schema:
-                type: string
-        '404':
-          description: Resource not found
           content:
             text/plain:
               schema:
@@ -102,6 +93,12 @@ components:
           type: string
         inputData:
           type: string
+    speechToTextRequestModel:
+      type: object
+      properties:
+        inputData:
+          type: string
+          format: binary
     speechToTextResponseModel:
       type: object
       properties:
