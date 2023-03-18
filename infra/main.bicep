@@ -86,6 +86,15 @@ module trnsltr './translator.bicep' = {
   }
 }
 
+module speech './speech.bicep' = {
+    name: 'Speech'
+    scope: rg
+    params: {
+      name: name
+      location: location
+    }
+  }
+  
 module apim './provision-apiManagement.bicep' = {
   name: 'ApiManagement'
   scope: rg
@@ -118,8 +127,10 @@ module fncapp './provision-functionApp.bicep' = [for (app, index) in apps: if (a
     location: location
     storageContainerName: storageContainerName
     apimApiPath: app.apiPath
-    translatorApiEndpoint: trnsltr.outputs.endpoint
     translatorApiKey: trnsltr.outputs.apiKey
+    translatorApiEndpoint: trnsltr.outputs.endpoint
+    speechApiKey: speech.outputs.apiKey
+    speechRegion: speech.outputs.region
   }
 }]
 

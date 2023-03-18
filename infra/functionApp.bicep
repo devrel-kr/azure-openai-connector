@@ -10,9 +10,13 @@ param appInsightsInstrumentationKey string
 @secure()
 param appInsightsConnectionString string
 
-param translatorApiEndpoint string
 @secure()
 param translatorApiKey string
+param translatorApiEndpoint string
+
+@secure()
+param speechApiKey string
+param speechRegion string
 
 param apimApiPath string
 
@@ -29,8 +33,12 @@ var appInsights = {
 
 var cognitiveservices = {
   translator: {
-    endpoint: translatorApiEndpoint
     apiKey: translatorApiKey
+    endpoint: translatorApiEndpoint
+  }
+  speech: {
+    apiKey: speechApiKey
+    region: speechRegion
   }
 }
 
@@ -104,6 +112,14 @@ resource fncapp 'Microsoft.Web/sites@2022-03-01' = {
         {
           name: 'CognitiveServices__Translator__ApiKey'
           value: cognitiveservices.translator.apiKey
+        }
+        {
+          name: 'CognitiveServices__Speech__ApiKey'
+          value: cognitiveservices.speech.apiKey
+        }
+        {
+          name: 'CognitiveServices__Speech__Region'
+          value: cognitiveservices.speech.region
         }
       ]
     }

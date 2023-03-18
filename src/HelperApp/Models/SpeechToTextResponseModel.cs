@@ -1,4 +1,4 @@
-﻿namespace DevRelKR.OpenAIConnector.HelperApp.Models
+namespace DevRelKR.OpenAIConnector.HelperApp.Models
 {
     public class SpeechToTextResponseModel
     {

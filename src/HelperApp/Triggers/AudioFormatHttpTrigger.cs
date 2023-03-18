@@ -35,12 +35,11 @@ namespace DevRelKR.OpenAIConnector.HelperApp.Triggers
         }
 
         [FunctionName(nameof(AudioFormatHttpTrigger.ConvertFormatAsync))]
-        [OpenApiOperation(operationId: "ConvertAudioFormat", tags: new[] { "converter" })]
+        [OpenApiOperation(operationId: "ConvertAudioFormat", tags: new[] { "converter" }, Summary = "Converts the audio format from one to the other", Description = "This operation converts the input audio file format (`webm` by default) to the given output file format (`wav` by default).")]
         [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "x-functions-key", In = OpenApiSecurityLocationType.Header)]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(AudioFormatRequestModel), Description = "The input file data")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "audio/wav", bodyType: typeof(byte[]), Description = "The output file data")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.BadRequest, contentType: "text/plain", bodyType: typeof(string), Description = "Either request header or body is invalid")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.NotFound, contentType: "text/plain", bodyType: typeof(string), Description = "Resource not found")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.InternalServerError, contentType: "text/plain", bodyType: typeof(string), Description = "Something went wrong")]
         public async Task<IActionResult> ConvertFormatAsync(
             [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "convert/audio")] HttpRequest req,
@@ -60,17 +59,17 @@ namespace DevRelKR.OpenAIConnector.HelperApp.Triggers
 
             if (request.Input.IsNullOrWhiteSpace())
             {
-                this._logger.LogError("Input is missing");
-                return new BadRequestObjectResult("Either input or output is missing");
+                this._logger.LogInformation("Input is set to default of 'webm'.");
+                request.Input = "webm";
             }
             if (request.Output.IsNullOrWhiteSpace())
             {
-                this._logger.LogError("Output is missing");
-                return new BadRequestObjectResult("Either input or output is missing");
+                this._logger.LogInformation("Output is set to default of 'wav'.");
+                request.Output = "wav";
             }
             if (request.InputData.IsNullOrWhiteSpace())
             {
-                this._logger.LogError("Audio is missing");
+                this._logger.LogError("Input audio is missing");
                 return new BadRequestObjectResult("Input audio data is missing");
             }
 
@@ -120,11 +119,11 @@ namespace DevRelKR.OpenAIConnector.HelperApp.Triggers
             }
 
             bytes = await File.ReadAllBytesAsync(voiceOut);
-
-            // File.Delete(voiceIn);
-            // File.Delete(voiceOut);
-            // Directory.Delete(tempPath, recursive: true);
-
+#if !DEBUG
+            File.Delete(voiceIn);
+            File.Delete(voiceOut);
+            Directory.Delete(tempPath, recursive: true);
+#endif
             return new FileContentResult(bytes, "audio/wav");
         }
     }

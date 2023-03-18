@@ -5,9 +5,12 @@ param location string = resourceGroup().location
 param storageContainerName string
 param apimApiPath string
 
-param translatorApiEndpoint string
 @secure()
 param translatorApiKey string
+param translatorApiEndpoint string
+@secure()
+param speechApiKey string
+param speechRegion string
 
 var shortname = '${name}${replace(suffix, '-', '')}'
 var longname = '${name}-${suffix}'
@@ -56,8 +59,10 @@ module fncapp './functionApp.bicep' = {
     storageAccountConnectionString: st.outputs.connectionString
     appInsightsInstrumentationKey: appins.outputs.instrumentationKey
     appInsightsConnectionString: appins.outputs.connectionString
-    translatorApiEndpoint: translatorApiEndpoint
     translatorApiKey: translatorApiKey
+    translatorApiEndpoint: translatorApiEndpoint
+    speechApiKey: speechApiKey
+    speechRegion: speechRegion
     consumptionPlanId: csplan.outputs.id
   }
 }
