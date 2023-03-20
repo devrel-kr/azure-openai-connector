@@ -34,7 +34,7 @@ namespace DevRelKR.OpenAIConnector.HelperApp.Triggers
         }
 
         [FunctionName(nameof(AudioFormatHttpTrigger.ConvertFormatAsync))]
-        [OpenApiOperation(operationId: "ConvertAudioFormat", tags: new[] { "converter" }, Summary = "Converts the audio format from one to the other", Description = "This operation converts the input audio file format (`webm` by default) to the given output file format (`wav` by default).")]
+        [OpenApiOperation(operationId: "ConvertAudioFormat", tags: new[] { "converter" }, Summary = "Audio format conversion", Description = "This operation converts the input audio file format (`webm` by default) to `wav`.")]
         [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "x-functions-key", In = OpenApiSecurityLocationType.Header)]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(AudioFormatRequestModel), Description = "The input file data")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "audio/wav", bodyType: typeof(byte[]), Description = "The output file data")]
@@ -60,11 +60,6 @@ namespace DevRelKR.OpenAIConnector.HelperApp.Triggers
             {
                 this._logger.LogInformation("Input is set to default of 'webm'.");
                 request.Input = "webm";
-            }
-            if (request.Output.IsNullOrWhiteSpace())
-            {
-                this._logger.LogInformation("Output is set to default of 'wav'.");
-                request.Output = "wav";
             }
             if (request.InputData.IsNullOrWhiteSpace())
             {

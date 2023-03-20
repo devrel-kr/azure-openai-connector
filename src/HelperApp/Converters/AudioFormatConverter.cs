@@ -24,11 +24,11 @@ namespace DevRelKR.OpenAIConnector.HelperApp.Converters
 #if DEBUG
             var tempPath = Path.Combine(fncappdir, "Temp");
             var voiceIn = Path.Combine(tempPath, $"{Path.GetRandomFileName()}.{request.Input}");
-            var voiceOut = Path.Combine(tempPath, $"{Path.GetRandomFileName()}.{request.Output}");
+            var voiceOut = Path.Combine(tempPath, $"{Path.GetRandomFileName()}.wav");
 #else
             var tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
             var voiceIn = Path.Combine(tempPath, $"{Path.GetRandomFileName()}.{request.Input}");
-            var voiceOut = Path.Combine(tempPath, $"{Path.GetRandomFileName()}.{request.Output}");
+            var voiceOut = Path.Combine(tempPath, $"{Path.GetRandomFileName()}.wav");
 #endif
             Directory.CreateDirectory(tempPath);
 

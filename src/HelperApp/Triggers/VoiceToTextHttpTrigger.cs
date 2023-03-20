@@ -36,7 +36,7 @@ namespace DevRelKR.OpenAIConnector.HelperApp.Triggers
         }
 
         [FunctionName(nameof(VoiceToTextHttpTrigger.ConvertVoiceToTextAsync))]
-        [OpenApiOperation(operationId: "ConvertVoiceToTextAsync", tags: new[] { "converter" }, Summary = "Converts the voice input to text", Description = "This operation converts the voice input to text based on the given locale (`en-au` by default).")]
+        [OpenApiOperation(operationId: "ConvertVoiceToTextAsync", tags: new[] { "converter" }, Summary = "Voice to text", Description = "This operation converts the voice input to text based on the given locale (`en-au` by default).")]
         [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "x-functions-key", In = OpenApiSecurityLocationType.Header)]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(VoiceToTextRequestModel), Description = "The input file data")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(VoiceToTextResponseModel), Description = "The output file data")]
@@ -63,11 +63,6 @@ namespace DevRelKR.OpenAIConnector.HelperApp.Triggers
                 this._logger.LogInformation("Input is set to default of 'webm'.");
                 request.Input = "webm";
             }
-            if (request.Output.IsNullOrWhiteSpace())
-            {
-                this._logger.LogInformation("Output is set to default of 'wav'.");
-                request.Output = "wav";
-            }
             if (request.Locale.IsNullOrWhiteSpace())
             {
                 this._logger.LogInformation("Locale is set to default of 'en-au'.");
@@ -82,10 +77,10 @@ namespace DevRelKR.OpenAIConnector.HelperApp.Triggers
             var fncappdir = context.FunctionAppDirectory;
 #if DEBUG
             var tempPath = Path.Combine(fncappdir, "Temp");
-            var voiceIn = Path.Combine(tempPath, $"{Path.GetRandomFileName()}.{request.Output}");
+            var voiceIn = Path.Combine(tempPath, $"{Path.GetRandomFileName()}.wav");
 #else
             var tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-            var voiceIn = Path.Combine(tempPath, $"{Path.GetRandomFileName()}.{request.Output}");
+            var voiceIn = Path.Combine(tempPath, $"{Path.GetRandomFileName()}.wav");
 #endif
             Directory.CreateDirectory(tempPath);
 

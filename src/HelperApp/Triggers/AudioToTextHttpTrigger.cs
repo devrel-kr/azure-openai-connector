@@ -31,7 +31,7 @@ namespace DevRelKR.OpenAIConnector.HelperApp.Triggers
         }
 
         [FunctionName(nameof(AudioToTextHttpTrigger.ConvertAudioToTextAsync))]
-        [OpenApiOperation(operationId: "ConvertSpeechToText", tags: new[] { "converter" }, Summary = "Converts the audio input to text", Description = "This operation converts the audio input to text based on the given locale (`en-au` by default).")]
+        [OpenApiOperation(operationId: "ConvertSpeechToText", tags: new[] { "converter" }, Summary = "Audio file to text", Description = "This operation converts the audio input to text based on the given locale (`en-au` by default).")]
         [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "x-functions-key", In = OpenApiSecurityLocationType.Header)]
         [OpenApiParameter(name: "locale", In = ParameterLocation.Path, Required = true, Type = typeof(string), Description = "The locale of the audio input")]
         [OpenApiRequestBody(contentType: "multipart/form-data", bodyType: typeof(AudioToTextRequestModel), Description = "The input file data")]

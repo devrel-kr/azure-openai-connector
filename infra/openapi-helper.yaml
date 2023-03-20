@@ -10,8 +10,8 @@ paths:
     post:
       tags:
         - converter
-      summary: Converts the audio format from one to the other
-      description: This operation converts the input audio file format (`webm` by default) to the given output file format (`wav` by default).
+      summary: Audio format conversion
+      description: This operation converts the input audio file format (`webm` by default) to `wav`.
       operationId: ConvertAudioFormat
       requestBody:
         description: The input file data
@@ -45,7 +45,7 @@ paths:
     post:
       tags:
         - converter
-      summary: Converts the audio input to text
+      summary: Audio file to text
       description: This operation converts the audio input to text based on the given locale (`en-au` by default).
       operationId: ConvertSpeechToText
       parameters:
@@ -86,7 +86,7 @@ paths:
     post:
       tags:
         - converter
-      summary: Converts the voice input to text
+      summary: Voice to text
       description: This operation converts the voice input to text based on the given locale (`en-au` by default).
       operationId: ConvertVoiceToTextAsync
       requestBody:
@@ -123,8 +123,6 @@ components:
       properties:
         input:
           type: string
-        output:
-          type: string
         inputData:
           type: string
     audioToTextRequestModel:
@@ -144,8 +142,6 @@ components:
         locale:
           type: string
         input:
-          type: string
-        output:
           type: string
         inputData:
           type: string
