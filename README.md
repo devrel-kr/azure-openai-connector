@@ -1,6 +1,6 @@
 # OpenAI Connector
 
-OpenAI API와 Azure OpenAI Service API에 대한 파워 플랫폼 커스텀 커넥터 프로젝트입니다.
+This is a Power Platform custom connector project for OpenAI API and Azure OpenAI Service API.
 
 
 ## Prerequisites
