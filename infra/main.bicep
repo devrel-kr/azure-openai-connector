@@ -23,6 +23,7 @@ var apps = [
     apiExtension: 'yaml'
     apiSubscription: true
     apiProduct: 'openai'
+    apiOperations: []
   }
   {
     isFunctionApp: false
@@ -35,6 +36,7 @@ var apps = [
     apiExtension: 'json'
     apiSubscription: true
     apiProduct: 'aoai'
+    apiOperations: []
   }
   {
     isFunctionApp: false
@@ -47,6 +49,7 @@ var apps = [
     apiExtension: 'json'
     apiSubscription: true
     apiProduct: 'aoai'
+    apiOperations: []
   }
   {
     isFunctionApp: true
@@ -59,6 +62,42 @@ var apps = [
     apiExtension: 'yaml'
     apiSubscription: true
     apiProduct: 'default'
+    apiOperations: []
+  }
+  {
+    isFunctionApp: false
+    functionAppSuffix: ''
+    apiName: 'AOAI'
+    apiPath: 'aoai'
+    apiServiceUrl: 'https://apim-{{AZURE_ENV_NAME}}.azure-api.net/aoai'
+    apiReferenceUrl: 'https://raw.githubusercontent.com/${gitHubUsername}/${gitHubRepositoryName}/${gitHubBranchName}/infra/openapi-aoai.{{EXTENSION}}'
+    apiFormat: 'openapi-link'
+    apiExtension: 'yaml'
+    apiSubscription: true
+    apiProduct: 'aoai'
+    apiOperations: [
+      {
+        name: 'ConvertVoiceToTextAsync'
+        policy: {
+          format: 'xml-link'
+          value: 'https://raw.githubusercontent.com/${gitHubUsername}/${gitHubRepositoryName}/${gitHubBranchName}/infra/apim-policy-api-aoai-operation-convertvoicetotextasync.xml'
+        }
+      }
+      {
+        name: 'Deployments_List'
+        policy: {
+          format: 'xml-link'
+          value: 'https://raw.githubusercontent.com/${gitHubUsername}/${gitHubRepositoryName}/${gitHubBranchName}/infra/apim-policy-api-aoai-operation-deployments_list.xml'
+        }
+      }
+      {
+        name: 'Completions_Create'
+        policy: {
+          format: 'xml-link'
+          value: 'https://raw.githubusercontent.com/${gitHubUsername}/${gitHubRepositoryName}/${gitHubBranchName}/infra/apim-policy-api-aoai-operation-completions_create.xml'
+        }
+      }
+    ]
   }
 ]
 var storageContainerName = 'openapis'
@@ -153,6 +192,7 @@ module apis './provision-apiManagementApi.bicep' = [for (app, index) in apps: {
     apiManagementApiValue: replace(replace(app.apiReferenceUrl, '{{SUFFIX}}', app.functionAppSuffix), '{{EXTENSION}}', app.apiExtension)
     apiManagementApiPolicyFormat: 'xml-link'
     apiManagementApiPolicyValue: 'https://raw.githubusercontent.com/${gitHubUsername}/${gitHubRepositoryName}/${gitHubBranchName}/infra/apim-policy-api-${replace(toLower(app.apiName), '-', '')}.xml'
+    apiManagementApiOperations: app.apiOperations
     apiManagementProductName: app.apiProduct
   }
 }]
