@@ -1,6 +1,6 @@
 namespace DevRelKR.OpenAIConnector.HelperApp.Models
 {
-    public class SpeechToTextRequestModel
+    public class AudioToTextRequestModel
     {
         public virtual byte[] InputData { get; set; }
     }

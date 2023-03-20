@@ -1,10 +1,9 @@
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 
-using DevRelKR.OpenAIConnector.HelperApp.Configurations;
+using DevRelKR.OpenAIConnector.HelperApp.Converters;
 using DevRelKR.OpenAIConnector.HelperApp.Models;
 
 using Microsoft.AspNetCore.Http;
@@ -25,12 +24,12 @@ namespace DevRelKR.OpenAIConnector.HelperApp.Triggers
 {
     public class AudioFormatHttpTrigger
     {
-        private readonly CognitiveServicesSettings _settings;
+        private readonly IAudioFormatConverter _converter;
         private readonly ILogger<AudioFormatHttpTrigger> _logger;
 
-        public AudioFormatHttpTrigger(CognitiveServicesSettings settings, ILogger<AudioFormatHttpTrigger> log)
+        public AudioFormatHttpTrigger(IAudioFormatConverter converter, ILogger<AudioFormatHttpTrigger> log)
         {
-            this._settings = settings.ThrowIfNullOrDefault();
+            this._converter = converter.ThrowIfNullOrDefault();
             this._logger = log.ThrowIfNullOrDefault();
         }
 
@@ -73,38 +72,10 @@ namespace DevRelKR.OpenAIConnector.HelperApp.Triggers
                 return new BadRequestObjectResult("Input audio data is missing");
             }
 
-            var bytes = Convert.FromBase64String(request.InputData);
-
-            var fncappdir = context.FunctionAppDirectory;
-#if DEBUG
-            var tempPath = Path.Combine(fncappdir, "Temp");
-            var voiceIn = Path.Combine(tempPath, $"{Path.GetRandomFileName()}.{request.Input}");
-            var voiceOut = Path.Combine(tempPath, $"{Path.GetRandomFileName()}.{request.Output}");
-#else
-            var tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-            var voiceIn = Path.Combine(tempPath, $"{Path.GetRandomFileName()}.{request.Input}");
-            var voiceOut = Path.Combine(tempPath, $"{Path.GetRandomFileName()}.{request.Output}");
-#endif
-            Directory.CreateDirectory(tempPath);
-
-            await File.WriteAllBytesAsync(voiceIn, bytes);
-
-            var ffmpeg = Path.Combine(fncappdir,
-                                      $"Tools{Path.DirectorySeparatorChar}ffmpeg{(OperatingSystem.IsWindows() ? ".exe" : string.Empty)}");
-
+            var bytes = default(byte[]);
             try
             {
-                var psi = new ProcessStartInfo
-                {
-                    FileName = ffmpeg,
-                    Arguments = $"-i \"{voiceIn}\" \"{voiceOut}\"",
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    UseShellExecute = false,
-                };
-
-                var process = Process.Start(psi);
-                process.WaitForExit();
+                bytes = await this._converter.ConvertAsync(request, context);
             }
             catch (Exception ex)
             {
@@ -118,12 +89,6 @@ namespace DevRelKR.OpenAIConnector.HelperApp.Triggers
                 };
             }
 
-            bytes = await File.ReadAllBytesAsync(voiceOut);
-#if !DEBUG
-            File.Delete(voiceIn);
-            File.Delete(voiceOut);
-            Directory.Delete(tempPath, recursive: true);
-#endif
             return new FileContentResult(bytes, "audio/wav");
         }
     }

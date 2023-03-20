@@ -1,6 +1,7 @@
-﻿using System;
+using System;
 
 using DevRelKR.OpenAIConnector.HelperApp.Configurations;
+using DevRelKR.OpenAIConnector.HelperApp.Converters;
 
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Configurations.AppSettings.Extensions;
@@ -29,6 +30,7 @@ namespace DevRelKR.OpenAIConnector.HelperApp
         {
             ConfigureAppSettings(builder.Services);
             ConfigureHttpClient(builder.Services);
+            ConfigureConverters(builder.Services);
         }
 
         private static void ConfigureAppSettings(IServiceCollection services)
@@ -63,6 +65,12 @@ namespace DevRelKR.OpenAIConnector.HelperApp
         private static void ConfigureHttpClient(IServiceCollection services)
         {
             services.AddHttpClient("helper");
+        }
+
+        private static void ConfigureConverters(IServiceCollection services)
+        {
+            services.AddScoped<IAudioFormatConverter, AudioFormatConverter>();
+            services.AddScoped<IAudioToTextConverter, AudioToTextConverter>();
         }
     }
 }

@@ -45,13 +45,13 @@ paths:
     post:
       tags:
         - converter
-      summary: Converts the voice input to text
-      description: This operation converts the voice input to text based on the given locale (`en-au` by default).
+      summary: Converts the audio input to text
+      description: This operation converts the audio input to text based on the given locale (`en-au` by default).
       operationId: ConvertSpeechToText
       parameters:
         - name: locale
           in: path
-          description: The locale of the voice input
+          description: The locale of the audio input
           required: true
           schema:
             type: string
@@ -60,14 +60,48 @@ paths:
         content:
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/speechToTextRequestModel'
+              $ref: '#/components/schemas/audioToTextRequestModel'
       responses:
         '200':
           description: The output file data
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/speechToTextResponseModel'
+                $ref: '#/components/schemas/audioToTextResponseModel'
+        '400':
+          description: Either request header or body is invalid
+          content:
+            text/plain:
+              schema:
+                type: string
+        '500':
+          description: Something went wrong
+          content:
+            text/plain:
+              schema:
+                type: string
+      security:
+        - function_key: [ ]
+  /convert/voice:
+    post:
+      tags:
+        - converter
+      summary: Converts the voice input to text
+      description: This operation converts the voice input to text based on the given locale (`en-au` by default).
+      operationId: ConvertVoiceToTextAsync
+      requestBody:
+        description: The input file data
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/voiceToTextRequestModel'
+      responses:
+        '200':
+          description: The output file data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/voiceToTextResponseModel'
         '400':
           description: Either request header or body is invalid
           content:
@@ -93,13 +127,29 @@ components:
           type: string
         inputData:
           type: string
-    speechToTextRequestModel:
+    audioToTextRequestModel:
       type: object
       properties:
         inputData:
           type: string
           format: binary
-    speechToTextResponseModel:
+    audioToTextResponseModel:
+      type: object
+      properties:
+        outputData:
+          type: string
+    voiceToTextRequestModel:
+      type: object
+      properties:
+        locale:
+          type: string
+        input:
+          type: string
+        output:
+          type: string
+        inputData:
+          type: string
+    voiceToTextResponseModel:
       type: object
       properties:
         outputData:
