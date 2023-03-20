@@ -9,3 +9,16 @@ infra:
 
 pipeline:
   provider: "github"
+
+# hooks:
+#   postprovision:
+#     # run: |
+#     #   gh workflow run "Azure Dev" --repo $GITHUB_USERNAME/$GITHUB_REPOSITORY_NAME
+#     posix:
+#       shell: sh
+#       run: |
+#         gh workflow run "Azure Dev" --repo $GITHUB_USERNAME/$GITHUB_REPOSITORY_NAME
+#     windows:
+#       shell: pwsh
+#       run: |
+#         gh workflow run "Azure Dev" --repo $GITHUB_USERNAME/$GITHUB_REPOSITORY_NAME
