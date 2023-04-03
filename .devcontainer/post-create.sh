@@ -1,3 +1,5 @@
+#!/bin/bash
+
 ## Install additional apt packages
 sudo apt-get update && \
     sudo apt-get install -y dos2unix libsecret-1-0 xdg-utils
@@ -93,6 +95,10 @@ echo '
 # Add GitHub Copilot CLI alias
 eval "$(github-copilot-cli alias -- "$0")"
 ' >> $HOME/.zshrc
+echo '
+# Add GitHub Copilot CLI alias
+eval "$(github-copilot-cli alias -- "$0")"
+' >> $HOME/.bashrc
 
 ## OH-MY-POSH ##
 # Uncomment the below to install oh-my-posh
