@@ -71,6 +71,7 @@
   
           // Required extensions
           "GitHub.copilot",
+          "GitHub.copilot-labs",
           "ms-dotnettools.csharp",
           "ms-vscode.PowerShell",
           "ms-vscode.vscode-node-azure-pack",
