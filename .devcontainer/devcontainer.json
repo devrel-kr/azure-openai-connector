@@ -11,23 +11,23 @@
   
     "features": {
       // Uncomment the below to install Azure CLI
-      "ghcr.io/devcontainers/features/azure-cli:1": {
+      "ghcr.io/devcontainers/features/azure-cli:latest": {
         "version": "latest",
         "extensions": "account,alias,deploy-to-azure,subscription"
       },
   
       // Uncomment the below to install GitHub CLI
-      "ghcr.io/devcontainers/features/github-cli:1": {
+      "ghcr.io/devcontainers/features/github-cli:latest": {
         "version": "latest"
       },
   
       // Uncomment the below to install node.js
-      "ghcr.io/devcontainers/features/node:1": {
+      "ghcr.io/devcontainers/features/node:latest": {
         "version": "lts"
       },
   
       // Install common utilities
-      "ghcr.io/devcontainers/features/common-utils:2": {
+      "ghcr.io/devcontainers/features/common-utils:latest": {
         "installZsh": true,
         "installOhMyZsh": true,
         "upgradePackages": true,
@@ -101,8 +101,8 @@
           "explorer.sortOrder": "type",
           "explorer.fileNesting.enabled": true,
           "explorer.fileNesting.patterns": {
-            "*.bicep": "${capture}.json",
-            "*.razor": "${capture}.razor.css",
+            "*.bicep": "${capture}.json, ${capture}.parameters.json",
+            "*.razor": "${capture}.razor.cs, ${capture}.razor.css",
             "*.js": "${capture}.js.map"
           }
         }
