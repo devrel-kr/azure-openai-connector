@@ -1,5 +1,5 @@
 param name string
-param location string = 'southcentralus'
+param location string = 'eastus'
 
 var openai = {
   name: 'aoai-${name}'
