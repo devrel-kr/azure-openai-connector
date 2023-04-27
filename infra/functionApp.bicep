@@ -126,5 +126,24 @@ resource fncapp 'Microsoft.Web/sites@2022-03-01' = {
   }
 }
 
+var policies = [
+  {
+    name: 'scm'
+    allow: false
+  }
+  {
+    name: 'ftp'
+    allow: false
+  }
+]
+
+resource fncappPolicies 'Microsoft.Web/sites/basicPublishingCredentialsPolicies@2022-03-01' = [for policy in policies: {
+  name: '${fncapp.name}/${policy.name}'
+  location: functionApp.location
+  properties: {
+    allow: policy.allow
+  }
+}]
+
 output id string = fncapp.id
 output name string = fncapp.name
