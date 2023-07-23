@@ -18,14 +18,34 @@ This is a Power Platform custom connector project for OpenAI API and Azure OpenA
 
 ### App Provisioning & Deployment
 
-1. Fork this repository.
-1. Run the command:
-   1. `azd login`
-   1. `azd init`
-   1. `azd pipeline config`
-   1. `azd up`
-   1. `gh auth login`
-   1. `gh workflow run "Azure Dev" --repo {{GITHUB_USERNAME}}/openai-connector`
+1. Fork this repository to your account.
+1. To provision resources, run the commands in the following order:
+
+   ```bash
+   # PowerShell
+   $AZURE_ENV_NAME = "pp$(Get-Random -Max 9999)"
+   $GITHUB_USERNAME = "{{GITHUB_USERNAME}}"
+
+   # Bash
+   AZURE_ENV_NAME="pp$RANDOM"
+   GITHUB_USERNAME="{{GITHUB_USERNAME}}"
+   ```
+
+   ```bash
+   azd auth login
+   azd init -e $AZURE_ENV_NAME
+   azd env set GITHUB_USERNAME $GITHUB_USERNAME
+   azd env set GITHUB_REPOSITORY_NAME azure-openai-connector
+   azd up
+   ```
+
+1. To deploy apps, run the commands in the following order:
+
+   ```bash
+   gh auth login
+   azd pipeline config
+   gh workflow run "Azure Dev" --repo $GITHUB_USERNAME/azure-openai-connector
+   ```
 
 
 ### Power Platform Custom Connector
