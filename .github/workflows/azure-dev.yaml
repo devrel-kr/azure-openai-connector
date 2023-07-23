@@ -24,10 +24,10 @@ jobs:
     - name: Checkout the repo
       uses: actions/checkout@v2
 
-    - name: Copy ffmpeg to project
-      shell: bash
-      run: |
-        cp tools/ffmpeg.exe src/HelperApp/Tools
+    # - name: Copy ffmpeg to project
+    #   shell: bash
+    #   run: |
+    #     cp tools/ffmpeg.exe src/HelperApp/Tools
 
     - name: Setup .NET SDK
       uses: actions/setup-dotnet@v1
